@@ -1,0 +1,1 @@
+CREATE DATABASE sorting_test;
