@@ -9,7 +9,6 @@
     #include "varatt.h"
 #endif
 
-
 PG_MODULE_MAGIC;
 
 PG_FUNCTION_INFO_V1(dp_decrypt);

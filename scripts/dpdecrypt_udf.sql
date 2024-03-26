@@ -94,9 +94,11 @@ CREATE OR REPLACE FUNCTION
     dp_decrypt_udf(cipher_keys bytea, cipher_text bytea)
     RETURNS bytea
     LANGUAGE PLPGSQL
-    IMMUTABLE
+--     IMMUTABLE
+    STABLE 
     PARALLEL SAFE
     STRICT
+    COST 5000
 AS
 $func$
 DECLARE
@@ -136,21 +138,24 @@ BEGIN
         THEN RAISE EXCEPTION 'Key not found in keyring';
     END IF;
     -- Decrypt the cipher text based on the magic number
-    CASE magic_number
-        WHEN 0x1e27f0de THEN
-            RETURN decrypt_aes_gcm_udf(
+    RETURN CASE magic_number
+       WHEN 505934046 THEN -- V1
+            decrypt_aes_gcm_udf(
                     cipher_key, 
                     substring(cipher_text, ENCRYPTED_START_GCM)
-                   );
-        WHEN 0x1e27f0df THEN
-            cipher_iv := substring(cipher_text, ENCRYPTED_START_GCM, IV_SIZE);
-            RETURN decrypt_iv(substring(cipher_text, ENCRYPTED_START_CBC), 
-                              cipher_key, 
-                              cipher_iv,
-                              'aes-cbc/pad:pkcs'
-                   );
-        ELSE RAISE EXCEPTION 'Invalid magic number';
-        END CASE;
+                   )
+       WHEN 166775280 THEN -- V0 
+           decrypt_aes_gcm_udf(
+                   cipher_key,
+                   substring(cipher_text, ENCRYPTED_START_GCM)
+           )
+        WHEN 505934047 THEN --V2
+            decrypt_iv(substring(cipher_text, ENCRYPTED_START_CBC),
+                cipher_key,
+                substring(cipher_text, ENCRYPTED_START_GCM, IV_SIZE),
+                'aes-cbc/pad:pkcs'
+            )
+        END;
 END
 $func$;
 

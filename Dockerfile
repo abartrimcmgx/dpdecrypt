@@ -1,4 +1,4 @@
-FROM postgres:16
+FROM postgres:14
 
 # docker is only used for integration testing, so ignoring security is acceptable
 
@@ -8,7 +8,8 @@ ENV POSTGRES_PASSWORD password
 RUN apt-get update && apt-get install -y build-essential \ 
     # && apt-get install -y gcc-multilib \
     && apt-get install -y libpq-dev \
-    && apt-get install -y postgresql-server-dev-16
+    && apt-get install -y postgresql-server-dev-14 \
+    && apt-get upgrade -y
 
 RUN mkdir -p /usr/src/dpdecrypt
 COPY . /usr/src/dpdecrypt
