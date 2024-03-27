@@ -159,21 +159,21 @@ BEGIN
 END
 $func$;
 
-SELECT 
-    -- Convert binary back to text
-    convert_from(
-        -- UDF to decrypt the cipher text
-        dp_decrypt_udf(
-            -- Keyring in the format { key_id(16) || key(32) || key_id || key || ... }
-                decode(
-                        'ae197f65469ba949935bd22be24991c272eccd3de76ed7db3ebcd2bad7a32fd808cae53880b4324489ee2287db588efa',
-                        'hex'),
-            -- Cipher text in the format { magic_number || key_id || cipher_text }
-                decode(
-                        '1e27f0dfae197f65469ba949935bd22be24991c2b198e0b891dd8550af88fd8284839189a03c4a23ee9a948460ba866f2c19f50bf8da32ae2b31336bc6527300401e1b66',
-                        'hex')
-        ), 'utf8'
-    );
+-- SELECT 
+--     -- Convert binary back to text
+--     convert_from(
+--         -- UDF to decrypt the cipher text
+--         dp_decrypt_udf(
+--             -- Keyring in the format { key_id(16) || key(32) || key_id || key || ... }
+--                 decode(
+--                         'ae197f65469ba949935bd22be24991c272eccd3de76ed7db3ebcd2bad7a32fd808cae53880b4324489ee2287db588efa',
+--                         'hex'),
+--             -- Cipher text in the format { magic_number || key_id || cipher_text }
+--                 decode(
+--                         '1e27f0dfae197f65469ba949935bd22be24991c2b198e0b891dd8550af88fd8284839189a03c4a23ee9a948460ba866f2c19f50bf8da32ae2b31336bc6527300401e1b66',
+--                         'hex')
+--         ), 'utf8'
+--     );
 
 -- '908c8eaf9750da92a119f24c02822960cdb30544d7b4716e160314cdcd477e7cd1bd81d947fc5b4e9703f053b4ba0c85729ab1'
 

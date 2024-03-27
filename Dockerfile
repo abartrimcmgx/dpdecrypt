@@ -16,5 +16,9 @@ COPY . /usr/src/dpdecrypt
 
 RUN cd /usr/src/dpdecrypt && make USE_PGXS=1 install
 
+
 COPY ./scripts/init.sql /docker-entrypoint-initdb.d/
+COPY ./scripts/dpdecrypt_udf.sql /docker-entrypoint-initdb.d/
+RUN cat /docker-entrypoint-initdb.d/dpdecrypt_udf.sql >> /docker-entrypoint-initdb.d/init.sql
+
 COPY ./scripts/load_ext.sh /docker-entrypoint-initdb.d/
